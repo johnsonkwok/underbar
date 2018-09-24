@@ -79,22 +79,26 @@
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
     const filteredColl = [];
+
     _.each(collection, function(item) {  
       if (test(item)) {
         filteredColl.push(item);
       }
     });
+
     return filteredColl;
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     const acc = [];
+
     _.each(collection, function(item) {
       if (!test(item)) {
         acc.push(item);
       }
     });
+
     return acc;
   };
 
@@ -102,6 +106,7 @@
   _.uniq = function(array, isSorted, iterator) {
     const dupFreeArr = [];
     const iteratedArr = [];
+
     if (isSorted) {
       _.each(array, function(item) {
         if (!iteratedArr.includes(iterator(item))) {
@@ -116,6 +121,7 @@
         }
       });
     }
+
     return dupFreeArr;
   };
 
@@ -126,9 +132,11 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     const mappedArr = [];
+
     _.each(collection, function(item, index) {
       mappedArr.push(iterator(item, index));
     });
+
     return mappedArr;
   };
 
@@ -165,6 +173,16 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    if (accumulator === undefined) {
+      accumulator = collection[0];
+      collection = collection.slice(1);
+    }
+
+    _.each(collection, function(item, index) {
+      accumulator = iterator(accumulator, item, index);
+    });
+
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
