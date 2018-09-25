@@ -174,14 +174,30 @@
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
     if (accumulator === undefined) {
-      accumulator = collection[0];
-      collection = collection.slice(1);
+      if (Array.isArray(collection)) {
+        accumulator = collection[0];
+        collection = collection.slice(1);
+      } else {
+        let collKeys = Object.keys(collection);
+        accumulator = collection[collKeys[0]];
+        collKeys = collKeys.slice(1);
+        collWithNoFirstKey = {};
+        _.each(collKeys, function(key) {
+          collWithNoFirstKey[key] = collection[key];
+        });
+      }
     }
 
-    _.each(collection, function(item, index) {
-      accumulator = iterator(accumulator, item, index);
-    });
-
+    if (Array.isArray(collection) || typeof collWithNoFirstKey === 'undefined') {
+      _.each(collection, function(item, idxKey) {
+        accumulator = iterator(accumulator, item, idxKey);
+      });
+    } else {
+      _.each(collWithNoFirstKey, function(item, key) {
+        accumulator = iterator(accumulator, item, key);
+      });
+    }
+    
     return accumulator;
   };
 
