@@ -109,14 +109,14 @@
 
     if (isSorted) {
       _.each(array, function(item) {
-        if (!iteratedArr.includes(iterator(item))) {
+        if (!_.contains(iteratedArr, iterator(item))) {
           iteratedArr.push(iterator(item));
           dupFreeArr.push(item);
         }
       });
     } else {
       _.each(array, function(item) {
-        if (!dupFreeArr.includes(item)) {
+        if (!_.contains(dupFreeArr, item)) {
           dupFreeArr.push(item);
         }
       });
@@ -318,7 +318,7 @@
     return function() {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
-        // infromation from one function call to another.
+        // information from one function call to another.
         result = func.apply(this, arguments);
         alreadyCalled = true;
       }
@@ -336,6 +336,24 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    let results = {};
+
+    return function() {
+      let args;
+      if (Array.isArray(arguments[0])) {
+        args = `arr${Array.from(arguments)}`;
+      } else {
+        args = Array.from(arguments).toString();
+      }
+
+      if (!results.hasOwnProperty(args)) {
+        results[args] = {
+          result: func.apply(this, arguments)
+        };
+      }
+
+      return results[args].result;
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
