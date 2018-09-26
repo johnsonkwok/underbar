@@ -385,6 +385,22 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    const copiedArr = array.slice();
+    const shuffledArr = [];
+
+    while (shuffledArr.length < array.length) {
+      const randomIdx = Math.floor(Math.random() * array.length);
+      let itemToAdd = copiedArr[randomIdx];
+      if (copiedArr.length === 1) {
+        itemToAdd = copiedArr[0];
+      }
+      if (itemToAdd !== undefined) {
+        shuffledArr.push(itemToAdd);
+        copiedArr.splice(randomIdx, 1);
+      }
+    }
+
+    return shuffledArr;
   };
 
 
