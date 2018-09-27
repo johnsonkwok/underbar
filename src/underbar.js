@@ -437,6 +437,32 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    const sortedArr = [];
+    const collWithCriteria = _.map(collection, function(item) {
+      return {
+        value: item,
+        criteria: (typeof iterator === 'string') ? item[iterator] : iterator(item)
+      }
+    });
+    const loopLength = collWithCriteria.length;
+
+    for (let i = 0; i < loopLength; i++) {
+      let currSmallestIdx = 0;
+      const currSmallest = _.reduce(collWithCriteria, function(smallest, cv, idx) {
+        if (cv.criteria === undefined && smallest.criteria === undefined) {
+          return smallest;
+        } else if (cv.criteria < smallest.criteria || smallest.criteria === undefined) {
+          currSmallestIdx = idx + 1;
+          return cv;
+        } else {
+          return smallest;
+        }
+      });
+      sortedArr.push(currSmallest.value);
+      collWithCriteria.splice(currSmallestIdx, 1);
+    }
+
+    return sortedArr;
   };
 
   // Zip together two or more arrays with elements of the same index
