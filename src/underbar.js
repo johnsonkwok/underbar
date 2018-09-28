@@ -522,6 +522,19 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    const diffArr = [];
+    const args = Array.from(arguments).slice(1);
+
+    for (let i = 0; i < array.length; i++) {
+      const inAnotherArr = _.some(args, function(currArr) {
+        return (_.contains(currArr, array[i]));
+      });
+      if (!inAnotherArr) {
+        diffArr.push(array[i]);
+      }
+    }
+
+    return diffArr;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
