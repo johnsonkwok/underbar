@@ -495,7 +495,7 @@
         const lastItem = acc.pop();
         acc = acc.concat(lastItem);
       }
-      
+
       return acc;
     }, []);
   };
@@ -503,6 +503,20 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    const universalArr = [];
+    const firstArr = arguments[0];
+    const args = Array.from(arguments).slice(1);
+
+    _.each(firstArr, function(item) {
+      const inAllArrays = _.every(args, function(currArr) {
+        return (_.contains(currArr, item));
+      });
+      if (inAllArrays) {
+        universalArr.push(item);
+      }
+    });
+    
+    return universalArr;
   };
 
   // Take the difference between one array and a number of other arrays.
