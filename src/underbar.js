@@ -543,5 +543,41 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+    let timeout = null;
+    let startTime = Date.now();
+    let timeElapsed = 0;
+    let remainingTime;
+    let result;
+    let args;
+
+    const throttled = function() {
+      args = arguments;
+      timeElapsed = Date.now() - startTime;
+      remainingTime = wait - timeElapsed;
+      
+      if (timeElapsed >= wait) {
+          timeout = null;
+          timeElapsed = 0;
+      }
+
+      if (!timeout) {
+        startTime = Date.now();
+        timeout = true;
+        result = func.apply(null, args);
+      } else { 
+        clearTimeout(timeout);
+        timeout = setTimeout(execLater, remainingTime);
+      }
+
+      return result;
+    }
+
+    const execLater = function() {  
+      startTime = Date.now();
+      result = func.apply(null, args);
+      return result;
+    }
+
+    return throttled;
   };
 }());
