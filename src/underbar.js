@@ -38,7 +38,7 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-  	const initialIdx = n > array.length ? 0: array.length - n;
+  	const initialIdx = n > array.length ? 0 : array.length - n;
   	return n === undefined ? array[array.length - 1] : array.slice(initialIdx, array.length);
   };
 
@@ -181,7 +181,7 @@
         let collKeys = Object.keys(collection);
         accumulator = collection[collKeys[0]];
         collKeys = collKeys.slice(1);
-        collWithNoFirstKey = {};
+        const collWithNoFirstKey = {};
         _.each(collKeys, function(key) {
           collWithNoFirstKey[key] = collection[key];
         });
@@ -418,18 +418,13 @@
     args = Array.from(arguments).slice(2);
     collection = collection.concat(args);
     
-    if (typeof functionOrKey === 'function') {
-      return _.map(collection, function(item) {
-        const argsObj = arguments;
-        argsObj.func = functionOrKey.apply(this, arguments);
-        return argsObj.func;
-      });
-    } else {
-      let method = functionOrKey;
-      return _.map(collection, function(item) {
-        return item[method].apply(item);
-      });
-    }
+    return _.map(collection, function(item) {
+      if (typeof functionOrKey === 'function') {
+        return functionOrKey.apply(item);
+      } else {
+        return item[functionOrKey].apply(item);
+      }
+    });
   };
 
   // Sort the object's values by a criterion produced by an iterator.
