@@ -106,21 +106,14 @@
   _.uniq = function(array, isSorted, iterator) {
     const dupFreeArr = [];
     const iteratedArr = [];
-
-    if (isSorted) {
-      _.each(array, function(item) {
-        if (!_.contains(iteratedArr, iterator(item))) {
-          iteratedArr.push(iterator(item));
-          dupFreeArr.push(item);
-        }
-      });
-    } else {
-      _.each(array, function(item) {
-        if (!_.contains(dupFreeArr, item)) {
-          dupFreeArr.push(item);
-        }
-      });
-    }
+    iterator = iterator || _.identity;
+    
+    _.each(array, function(item) {
+      if (!_.contains(iteratedArr, iterator(item))) {
+        iteratedArr.push(iterator(item));
+        dupFreeArr.push(item);
+      }
+    });
 
     return dupFreeArr;
   };
@@ -347,12 +340,10 @@
       }
 
       if (!results.hasOwnProperty(args)) {
-        results[args] = {
-          result: func.apply(this, arguments)
-        };
+        results[args] = func.apply(this, arguments);
       }
 
-      return results[args].result;
+      return results[args];
     };
   };
 
