@@ -538,41 +538,63 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
-    let timeout = null;
-    let startTime = Date.now();
-    let timeElapsed = 0;
-    let remainingTime;
-    let result;
-    let args;
+  // My Initial Attempt (seems to work as intended but does not pass all tests)
+    // let timeout = null;
+    // let startTime = Date.now();
+    // let timeElapsed = 0;
+    // let remainingTime;
+    // let result;
+    // let args;
 
-    const throttled = function() {
-      args = arguments;
-      timeElapsed = Date.now() - startTime;
-      remainingTime = wait - timeElapsed;
+    // const throttled = function() {
+    //   args = arguments;
+    //   timeElapsed = Date.now() - startTime;
+    //   remainingTime = wait - timeElapsed;
       
-      if (timeElapsed >= wait) {
-          timeout = null;
-          timeElapsed = 0;
+    //   if (timeElapsed >= wait) {
+    //       timeout = null;
+    //       timeElapsed = 0;
+    //   }
+
+    //   if (!timeout) {
+    //     startTime = Date.now();
+    //     timeout = true;
+    //     result = func.apply(null, args);
+    //   } else { 
+    //     clearTimeout(timeout);
+    //     timeout = setTimeout(execLater, remainingTime);
+    //   }
+
+    //   return result;
+    // }
+
+    // const execLater = function() {  
+    //   startTime = Date.now();
+    //   result = func.apply(null, args);
+    //   return result;
+    // }
+
+    // return throttled;
+
+  // A concise solution with help from HR Staff
+    // use a flag variable to check if the function has been called within the wait period
+    // flag will initially be set to false
+    // return nested function
+      // if flag variable is not true (i.e. false)
+        // callback function is called, and flag is set to true
+        // use setTimeout method to reset flag to false after wait period expires
+      // callback function will not be able to be called during wait period
+    let flag = false;
+
+    return function() {
+      if (!flag) {
+        flag = true;
+        func.apply(null, arguments);
+        
+        setTimeout(function() {
+          flag = false;
+        }, wait);
       }
-
-      if (!timeout) {
-        startTime = Date.now();
-        timeout = true;
-        result = func.apply(null, args);
-      } else { 
-        clearTimeout(timeout);
-        timeout = setTimeout(execLater, remainingTime);
-      }
-
-      return result;
-    }
-
-    const execLater = function() {  
-      startTime = Date.now();
-      result = func.apply(null, args);
-      return result;
-    }
-
-    return throttled;
+    };
   };
 }());
